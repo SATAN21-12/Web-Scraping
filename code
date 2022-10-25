@@ -1,0 +1,38 @@
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+data_mine=pd.read_excel(r"C:\Users\DELL\Downloads\Data Mining.xlsx")
+#print(data_mine)
+req = pd.DataFrame(data_mine,columns=['URL'])
+#print(req)
+reqlist=data_mine["URL"].tolist()
+#print(reqlist)
+
+mail=[]
+name_1 = []
+name_2 = []
+for k in reqlist:
+    url1 = k
+    r1 = requests.get(url1)
+    html_content = r1.content
+    soup1 = BeautifulSoup(html_content,'html.parser')
+    mail1=[]
+    name1 = []
+    name2 = []
+    for i in soup1.find_all('div',class_="col-lg-6 col-md-6 col-sm-12 col-xs-12"):
+        email=i.find('p')
+        mail1.append(email)
+    mail.append(mail1[2])
+    for j in soup1.find_all('table',class_="table table-striped"):
+        a=j.find('tr',class_="accordion-toggle main-row",id="package1")
+        b=j.find('tr',class_="accordion-toggle main-row",id="package2")
+        name1.append(a)
+        name2.append(b)
+    name_1.append(name1[7])
+    name_2.append(name2[7])
+#print(name_1)
+#print(name_2)
+#print(mail)
+
+af = pd.DataFrame({'NAME 1':name_1,'NAME 2':name_2,'EMAIL':mail}) 
+af.to_csv('data.csv', index=False, encoding='utf-8')
