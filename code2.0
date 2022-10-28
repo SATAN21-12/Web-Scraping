@@ -1,0 +1,17 @@
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+data_list=pd.read_excel(r"C:\Users\DELL\Desktop\GSC&Associates\datamine.xlsx")
+reqdlist=data_list["URL"].tolist()
+mes=[]
+
+for k in reqdlist:
+    urll = k
+    req = requests.get(urll)
+    html_content = req.content
+    soup2 = soup1 = BeautifulSoup(html_content,'html.parser')
+    for i in soup2.find_all('div', class_="region region-content"):
+        a = i.find('h1')
+        mes.append(a)
+f = pd.DataFrame({'company present':mes}) 
+f.to_csv('datapro.csv', index=False, encoding='utf-8')
